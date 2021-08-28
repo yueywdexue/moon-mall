@@ -1,0 +1,96 @@
+spring:
+  cloud:
+    gateway:
+      routes:
+        - id: baidu_route # 路由唯一表示
+          uri: https://www.baidu.com # 匹配成功后路由到哪个地方
+          predicates: # 断言
+            - Query=url, baidu # url是baidu就断言成功
+
+        - id: qq_route
+          uri: https://www.qq.com
+          predicates:
+            - Query=url, qq
+
+        # 商品服务路由 都是以/api/product为前缀
+        - id: product_route
+          # 负载均衡到gulimall-product服务中去
+          uri: lb://gulimall-product
+          predicates:
+            # 路径匹配
+            - Path=/api/product/**
+          filters:
+            # 路径重写
+            - RewritePath=/api/(?<segment>.*),/$\{segment}
+
+        - id: member_route
+          uri: lb://gulimall-member
+          predicates:
+            - Path=/api/member/**
+          filters:
+            - RewritePath=/api/(?<segment>.*),/$\{segment}
+
+        - id: coupon_route
+          uri: lb://gulimall-coupon
+          predicates:
+            - Path=/api/coupon/**
+          filters:
+            - RewritePath=/api/(?<segment>.*),/$\{segment}
+
+        # 第三方服务请求路由, 以/api/thirdparty为前缀
+        - id: thirdparty_route
+          uri: lb://gulimall-third-party
+          predicates:
+            - Path=/api/thirdparty/**
+          filters:
+            - RewritePath=/api/thirdparty/(?<segment>.*),/$\{segment}
+
+        # 仓储服务
+        - id: ware_route
+          uri: lb://gulimall-ware
+          predicates:
+            - Path=/api/ware/**
+          filters:
+            - RewritePath=/api/(?<segment>.*),/$\{segment}
+
+        # 前端请求路由 前端项目的请求都带上api前缀
+        - id: admin_route
+          uri: lb://renren-fast
+          predicates:
+            - Path=/api/**
+          filters:
+            - RewritePath=/api/(?<segment>.*),/renren-fast/$\{segment}
+
+        - id: gulimall_host_route
+          uri: lb://gulimall-product
+          predicates:
+            - Host=gulimall.com,item.gulimall.com
+
+
+        - id: gulimall_search_route
+          uri: lb://gulimall-search
+          predicates:
+            - Host=search.gulimall.com
+
+        - id: gulimall_auth_route
+          uri: lb://gulimall-auth-server
+          predicates:
+            - Host=auth.gulimall.com
+
+        - id: gulimall_cart_route
+          uri: lb://gulimall-cart
+          predicates:
+            - Host=cart.gulimall.com
+
+        - id: gulimall_order_route
+          uri: lb://gulimall-order
+          predicates:
+            - Host=order.gulimall.com
+
+        - id: gulimall_member_route
+          uri: lb://gulimall-member
+          predicates:
+            - Host=member.gulimall.com
+
+
+

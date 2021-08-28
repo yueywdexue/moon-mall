@@ -1,0 +1,13 @@
+gitee:
+  oauth:
+    clientid: 944ffc82106c67388eeeab7f0e52cf198b2f2dccfbd5acfc0f29d6d01c85e982
+    clientsecret: bc6bef67b97fddf7f1cb3538721cbc2022d884e9f12c9a8df192a04d85104ec7
+    callback: http://auth.gulimall.com/gitee/callback
+spring:
+  session:
+    store-type: redis
+
+server:
+  servlet:
+    session:
+      timeout: 30m
